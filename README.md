@@ -20,4 +20,4 @@ Before running the DAG, ensure you have the following prerequisites installed:
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/airflow-bitcoin-price.git
+   git clone https://github.com/vishwajatania87/airflow-bitcoin-price.git
