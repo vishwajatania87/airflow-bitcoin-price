@@ -13,6 +13,7 @@ Before running the DAG, ensure you have the following prerequisites installed:
 - Apache Airflow
 - Python packages listed in `requirements.txt`
 - Access to a PostgreSQL database
+- Run the DDL.sql in your PostgreSQL database and have the table ready to land the data. 
 
 ## Setup
 
