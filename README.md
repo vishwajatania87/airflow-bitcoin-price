@@ -1,61 +1,40 @@
-# Airflow Bitcoin Price DAG
+# Airflow Bitcoin Data Analysis Project
 
-This project contains an Airflow DAG (Directed Acyclic Graph) for fetching the current price of Bitcoin from an API and storing it in a PostgreSQL database table.
+This project utilizes Apache Airflow to automate the collection and analysis of Bitcoin price data. It consists of two DAGs:
 
-## Overview
+1. `coincaptoyb_dag`: Fetches Bitcoin price data from the CoinCap API and uploads it to a PostgreSQL database. Upon successful execution, it triggers another DAG for further analysis.
 
-This Airflow DAG fetches the current price of Bitcoin from the CoinCap API at regular intervals and inserts it into a PostgreSQL database table. It demonstrates a simple data pipeline workflow using Apache Airflow.
+2. `bitcoin_kpi_dag`: Calculates key performance indicators (KPIs) related to Bitcoin using data stored in the PostgreSQL database. It computes various metrics such as price change percentage, volatility, and market dominance.
 
 ## Prerequisites
 
-Before running the DAG, ensure you have the following prerequisites installed:
+Before running these DAGs, ensure that you have the following:
 
-- Apache Airflow
+- Apache Airflow installed and configured
+- PostgreSQL database set up with appropriate tables (`coincap_bitcoin.bitcoin_price_tracker` and `coincap_bitcoin.bitcoin_kpi`)
+- Necessary connections configured in Airflow (`ybconnection` for PostgreSQL)
 
-- Set Airflow Variable for Database connection Using Airflow UI or CLI
+## DAG Descriptions
 
+### 1. coincaptoyb_dag
 
- Using the Airflow UI:
+- **Purpose**: Fetches Bitcoin price data from the CoinCap API and uploads it to a PostgreSQL database.
+- **Tasks**:
+  - `fetch_and_upload_bitcoin_price`: PythonOperator task to fetch data from the API and upload it to PostgreSQL.
+  - `execute_sql_task`: TriggerDagRunOperator to trigger the `bitcoin_kpi_dag` upon successful data upload.
+- **Schedule Interval**: Runs every 5 minutes.
 
-1. **Navigate to the Variables Page**:
-   - Open your web browser and go to the Airflow web interface.
-   - Click on the "Admin" menu in the top navigation bar.
-   - From the dropdown menu, select "Variables".
+### 2. bitcoin_kpi_dag
 
-2. **Add a New Variable**:
-   - On the Variables page, click on the "Create" button.
-   - Enter the following details:
-     - Key: `dbconn`
-     - Value: Your PostgreSQL URL connection string (e.g., `postgresql://username:password@hostname:port/database_name`)
-   - Click on the "Save" button to create the variable.
+- **Purpose**: Calculates key performance indicators (KPIs) related to Bitcoin using data stored in PostgreSQL.
+- **Tasks**:
+  - `execute_sql_task`: PostgresOperator task to execute SQL queries for KPI calculation and insertion.
+- **Dependencies**: Depends on successful execution of the `coincaptoyb_dag`.
+- **Schedule Interval**: None (not scheduled to run periodically).
 
-Using the Airflow CLI:
+## Usage
 
-1. **Open Terminal or Command Prompt**:
-   - Open your terminal or command prompt.
+1. Clone the repository to your local machine:
 
-2. **Set the Variable**:
-   - Use the following command to set the variable using the Airflow CLI:
-     ```bash
-     airflow variables set dbconn 'postgresql://username:password@hostname:port/database_name'
-     ```
-     Replace the placeholders (`username`, `password`, `hostname`, `port`, `database_name`) with your PostgreSQL connection details.
-
-3. **Verify**:
-   - To verify that the variable has been set, you can use the following command:
-     ```bash
-     airflow variables get dbconn
-     ```
-   - This command should return the value of the `dbconn` variable that you just set.
-
-
-- Python packages listed in `requirements.txt`
-- Access to a PostgreSQL database
-- Run the sql located in 'ddl/create_bitcoin_price.sql' in your PostgreSQL database and have the table ready to land the data. 
-
-## Setup
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/vishwajatania87/airflow-bitcoin-price.git
+```bash
+git clone https://github.com/your_username/airflow-bitcoin-analysis.git
