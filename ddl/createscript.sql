@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS coincap_bitcoin.bitcoin_price_tracker (
 
 
 
-CREATE TABLE coincap_bitcoin.bitcoin_kpi (
+CREATE TABLE IF NOT EXISTS coincap_bitcoin.bitcoin_kpi (
     timestamp timestamp,
     current_price numeric(18,0),
     price_change_percentage numeric(38,2),
