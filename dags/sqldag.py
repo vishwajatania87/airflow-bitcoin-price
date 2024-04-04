@@ -65,18 +65,17 @@ with DAG('bitcoin_kpi_dag',
                 coincap_bitcoin.bitcoin_price_tracker
         ),
         vwap_crossing_cte AS (
-            SELECT 
-                timestamp,
-                bpt.vwap_24_hr,
-                CASE 
-                    WHEN price_usd > v.vwap_24_hr THEN 'Above VWAP'
-                    WHEN price_usd < v.vwap_24_hr THEN 'Below VWAP'
-                    ELSE 'At VWAP'
-                END AS vwap_crossing
-            FROM 
-                coincap_bitcoin.bitcoin_price_tracker bpt
-            CROSS JOIN 
-                (SELECT AVG(price_usd) AS vwap_24_hr FROM coincap_bitcoin.bitcoin_price_tracker) AS v
+             SELECT 
+        price_usd,
+        timestamp,
+        bpt.vwap_24_hr,
+        CASE 
+            WHEN price_usd > bpt.vwap_24_hr THEN 'Above VWAP'
+            WHEN price_usd < bpt.vwap_24_hr THEN 'Below VWAP'
+            ELSE 'At VWAP'
+        END AS vwap_crossing
+    FROM 
+        coincap_bitcoin.bitcoin_price_tracker bpt
         )
         SELECT 
             pc.timestamp,
